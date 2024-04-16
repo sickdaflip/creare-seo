@@ -42,6 +42,7 @@ class Creare_CreareSeoCore_Model_Sitemap_Sitemap extends Mage_Sitemap_Model_Site
             foreach ($subCollection as $item) {
                 $_category = Mage::getModel("catalog/category")->load($item->getId());
                 $title = str_replace('&', '', $_category->getName());
+                $date_category =  $_category->getData('updated_at');
                 $xmlImg = '';
                 $_imgHtml   = '';
                 if ($_imgUrl = $_category->getImageUrl()) {
@@ -52,7 +53,7 @@ class Creare_CreareSeoCore_Model_Sitemap_Sitemap extends Mage_Sitemap_Model_Site
 
                 $xml = sprintf('<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority>%s</url>' . "\n",
                     htmlspecialchars($baseUrl . $item->getUrl()),
-                    $date,
+                    $date_category,
                     $changefreq,
                     $priority,
                     $xmlImg
@@ -96,6 +97,7 @@ class Creare_CreareSeoCore_Model_Sitemap_Sitemap extends Mage_Sitemap_Model_Site
             $subCollection = array_slice($collection, $i * $limit, $limit);
             foreach ($subCollection as $item) {
                 $_product = Mage::getModel("catalog/product")->load($item->getId());
+                $date_product =  $_product->getData('updated_at');
                 $title = str_replace('&', '', $_product->getName());
                 $galleryData = $_product->getData('media_gallery');
                 $xmlImg = '';
@@ -106,7 +108,7 @@ class Creare_CreareSeoCore_Model_Sitemap_Sitemap extends Mage_Sitemap_Model_Site
                 $xml = sprintf(
                     '<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority>%s</url>' . "\n",
                     htmlspecialchars($baseUrl . $item->getUrl()),
-                    $date,
+                    $date_product,
                     $changefreq,
                     $priority,
                     $xmlImg
@@ -152,7 +154,7 @@ class Creare_CreareSeoCore_Model_Sitemap_Sitemap extends Mage_Sitemap_Model_Site
                 $xml = sprintf(
                     '<url><loc>%s</loc><lastmod>%s</lastmod><changefreq>%s</changefreq><priority>%.1f</priority></url>' . "\n",
                     htmlspecialchars($baseUrl . $item->getUrl()),
-                    $date,
+                    Mage::getModel('cms/page')->load($item->getId())->getUpdateTime(),
                     $item->getUrl() == 'home' ? 'always' : $changefreq,
                     $item->getUrl() == 'home' ? '1' : $priority
                 );
